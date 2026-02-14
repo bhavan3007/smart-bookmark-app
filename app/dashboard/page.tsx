@@ -40,7 +40,6 @@ export default function Dashboard() {
     if (user) fetchBookmarks();
   }, [user]);
 
-  /* ✅ FIXED REALTIME EFFECT (ONLY CHANGE IS HERE) */
   useEffect(() => {
     if (!user) return;
 
@@ -59,7 +58,6 @@ export default function Dashboard() {
       .subscribe();
 
     return () => {
-      // FIX: do not return promise
       supabase.removeChannel(channel);
     };
   }, [user]);
@@ -88,14 +86,12 @@ export default function Dashboard() {
 
   if (!user) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
-        <div className="bg-white/80 backdrop-blur-lg p-10 rounded-2xl shadow-xl text-center">
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100 p-4">
+        <div className="bg-white/80 backdrop-blur-lg p-8 rounded-2xl shadow-xl text-center w-full max-w-sm">
           <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
-
-          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+          <h2 className="text-lg sm:text-xl font-semibold text-gray-700 mb-2">
             Loading Dashboard...
           </h2>
-
           <p className="text-gray-500 text-sm">
             Please wait while we fetch your bookmarks
           </p>
@@ -106,17 +102,20 @@ export default function Dashboard() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
+
       {/* HEADER */}
-      <div className="bg-white shadow-lg px-10 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold text-gray-800">
+      <div className="bg-white shadow-lg px-4 sm:px-6 md:px-10 py-4 flex flex-col sm:flex-row justify-between items-center gap-3">
+        <h1 className="text-lg sm:text-xl font-bold text-gray-800">
           🔖 Bookmark Manager
         </h1>
 
-        <div className="flex items-center gap-4">
-          <p className="text-gray-600 text-sm">{user.email}</p>
+        <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4 text-center">
+          <p className="text-gray-600 text-xs sm:text-sm break-all">
+            {user.email}
+          </p>
           <button
             onClick={logout}
-            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow"
+            className="bg-red-500 hover:bg-red-600 text-white px-4 py-2 rounded-lg shadow text-sm"
           >
             Logout
           </button>
@@ -124,29 +123,32 @@ export default function Dashboard() {
       </div>
 
       {/* MAIN */}
-      <div className="max-w-6xl mx-auto p-8">
-        {/* ADD BOOKMARK CARD */}
-        <div className="bg-white rounded-2xl shadow-xl p-6 mb-10">
-          <h2 className="text-lg font-semibold mb-4">Add New Bookmark</h2>
+      <div className="max-w-6xl mx-auto p-4 sm:p-6 md:p-8">
 
-          <div className="grid md:grid-cols-3 gap-4">
+        {/* ADD BOOKMARK CARD */}
+        <div className="bg-white rounded-2xl shadow-xl p-4 sm:p-6 mb-8 sm:mb-10">
+          <h2 className="text-base sm:text-lg font-semibold mb-4">
+            Add New Bookmark
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <input
               placeholder="Title"
-              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-400 outline-none"
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-400 outline-none w-full"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
             />
 
             <input
               placeholder="URL"
-              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-400 outline-none"
+              className="border rounded-lg p-3 focus:ring-2 focus:ring-blue-400 outline-none w-full"
               value={url}
               onChange={(e) => setUrl(e.target.value)}
             />
 
             <button
               onClick={addBookmark}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:scale-105 transition"
+              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-lg font-semibold hover:scale-105 transition w-full"
             >
               + Add Bookmark
             </button>
@@ -155,13 +157,15 @@ export default function Dashboard() {
 
         {/* BOOKMARK GRID */}
         {bookmarks.length === 0 ? (
-          <p className="text-center text-gray-500">No bookmarks yet</p>
+          <p className="text-center text-gray-500 text-sm sm:text-base">
+            No bookmarks yet
+          </p>
         ) : (
-          <div className="grid md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-5 sm:gap-6">
             {bookmarks.map((b) => (
               <div
                 key={b.id}
-                className="bg-white rounded-xl shadow-lg p-5 hover:shadow-2xl transition"
+                className="bg-white rounded-xl shadow-lg p-4 sm:p-5 hover:shadow-2xl transition"
               >
                 {editingId === b.id ? (
                   <div className="space-y-3">
@@ -176,7 +180,7 @@ export default function Dashboard() {
                       className="border p-2 w-full rounded"
                     />
 
-                    <div className="flex gap-2">
+                    <div className="flex flex-wrap gap-2">
                       <button
                         onClick={() => updateBookmark(b.id)}
                         className="bg-blue-600 text-white px-3 py-1 rounded"
@@ -193,13 +197,15 @@ export default function Dashboard() {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex justify-between items-center">
-                    <div>
-                      <p className="font-bold text-lg">{b.title}</p>
+                  <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-4">
+                    <div className="break-all">
+                      <p className="font-bold text-base sm:text-lg">
+                        {b.title}
+                      </p>
                       <a
                         href={b.url}
                         target="_blank"
-                        className="text-blue-500 text-sm"
+                        className="text-blue-500 text-sm break-all"
                       >
                         {b.url}
                       </a>
@@ -212,14 +218,14 @@ export default function Dashboard() {
                           setEditTitle(b.title);
                           setEditUrl(b.url);
                         }}
-                        className="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-white"
+                        className="bg-yellow-400 hover:bg-yellow-500 px-3 py-1 rounded text-white text-sm"
                       >
                         Edit
                       </button>
 
                       <button
                         onClick={() => deleteBookmark(b.id)}
-                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white"
+                        className="bg-red-500 hover:bg-red-600 px-3 py-1 rounded text-white text-sm"
                       >
                         Delete
                       </button>
