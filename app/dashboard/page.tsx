@@ -40,6 +40,7 @@ export default function Dashboard() {
     if (user) fetchBookmarks();
   }, [user]);
 
+  /* ✅ FIXED REALTIME EFFECT (ONLY CHANGE IS HERE) */
   useEffect(() => {
     if (!user) return;
 
@@ -57,7 +58,10 @@ export default function Dashboard() {
       )
       .subscribe();
 
-    return () => supabase.removeChannel(channel);
+    return () => {
+      // FIX: do not return promise
+      supabase.removeChannel(channel);
+    };
   }, [user]);
 
   const addBookmark = async () => {
@@ -83,31 +87,25 @@ export default function Dashboard() {
   };
 
   if (!user) {
-  return (
-    <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
-      
-      <div className="bg-white/80 backdrop-blur-lg p-10 rounded-2xl shadow-xl text-center">
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
+        <div className="bg-white/80 backdrop-blur-lg p-10 rounded-2xl shadow-xl text-center">
+          <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
 
-        {/* Spinner */}
-        <div className="w-12 h-12 border-4 border-blue-500 border-t-transparent rounded-full animate-spin mx-auto mb-6"></div>
+          <h2 className="text-xl font-semibold text-gray-700 mb-2">
+            Loading Dashboard...
+          </h2>
 
-        <h2 className="text-xl font-semibold text-gray-700 mb-2">
-          Loading Dashboard...
-        </h2>
-
-        <p className="text-gray-500 text-sm">
-          Please wait while we fetch your bookmarks
-        </p>
-
+          <p className="text-gray-500 text-sm">
+            Please wait while we fetch your bookmarks
+          </p>
+        </div>
       </div>
-    </div>
-  );
-}
-
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-100 via-indigo-100 to-purple-100">
-
       {/* HEADER */}
       <div className="bg-white shadow-lg px-10 py-4 flex justify-between items-center">
         <h1 className="text-xl font-bold text-gray-800">
@@ -127,7 +125,6 @@ export default function Dashboard() {
 
       {/* MAIN */}
       <div className="max-w-6xl mx-auto p-8">
-
         {/* ADD BOOKMARK CARD */}
         <div className="bg-white rounded-2xl shadow-xl p-6 mb-10">
           <h2 className="text-lg font-semibold mb-4">Add New Bookmark</h2>
