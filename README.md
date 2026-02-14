@@ -27,3 +27,6 @@ redirectTo: ${window.location.origin}/dashboard
 and updated redirect URLs in Supabase settings.
 
 ---
+
+****Here is a final working url****
+https://smart-bookmark-app-one-xi.vercel.app/
